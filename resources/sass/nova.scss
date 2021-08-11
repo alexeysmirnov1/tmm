@@ -1,0 +1,50 @@
+.tabs-component-tabs {
+  overflow: auto;
+}
+
+/*region Fix flexible*/
+
+/* Forms */
+.overflow-hidden {
+  overflow: visible;
+}
+
+/* Index */
+.relative .overflow-hidden {
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.relative .overflow-y-auto {
+  overflow-y: auto;
+}
+
+.relationship-tabs-panel.overflow-hidden {
+  overflow: visible;
+}
+
+/* Forms fields */
+.overflow-hidden .card {
+  overflow: auto;
+}
+
+/* NovaTab */
+form {
+  padding-top: 1px;
+}
+
+/*endregion*/
+
+.py-6,
+.py-4 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.whitespace-no-wrap {
+  white-space: normal;
+}
+
+.multiselect__content-wrapper {
+  height: 300px;
+}
