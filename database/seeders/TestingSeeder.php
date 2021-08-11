@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class DefaultSeeder extends Seeder
+class TestingSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,6 @@ class DefaultSeeder extends Seeder
     public function run()
     {
         $this->call([
-            UserSeeder::class,
             SettingsSeeder::class,
         ]);
     }

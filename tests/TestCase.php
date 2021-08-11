@@ -25,7 +25,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->seed('SettingsSeeder');
+        $this->seed('DefaultSeeder');
     }
 
     /**

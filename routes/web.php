@@ -11,7 +11,21 @@
 |
 */
 
-Route::view('/', 'main.index')->name('main');
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
-Route::get('robots.txt', 'RobotsController')->name('robots');
-Route::get('sitemap.xml', 'SitemapController')->name('sitemap');
+Auth::routes();
+
+Route::middleware('auth')
+    ->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class])->name('dashboard');
+
+        Route::any('', function () {
+            dd(213);
+        });
+    });
+
+Route::middleware('guest')
+    ->group(function () {
+        Route::permanentRedirect('(.*)', '/login');
+    });

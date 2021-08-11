@@ -21,7 +21,7 @@
         "flagstudio/nova-admin-bar": "^0.2.0",
         "fourstacks/nova-repeatable-fields": "^1.3",
         "jenssegers/date": "^4.0",
-        "laravel/framework": "^8.0",
+        "laravel/framework": "^8.5",
         "laravel/helpers": "^1.2",
         "laravel/nova": "^3.0",
         "laravel/telescope": "^4.0",
