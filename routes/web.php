@@ -11,6 +11,9 @@
 |
 */
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -18,14 +21,16 @@ Auth::routes();
 
 Route::middleware('auth')
     ->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::any('', function () {
-            dd(213);
-        });
+        Route::resource('item', ItemController::class);
+
+        Route::resource('category', CategoryController::class);
+
+        Route::permanentRedirect('{any}', '/dashboard')->where('any', '.*');
     });
 
 Route::middleware('guest')
     ->group(function () {
-        Route::permanentRedirect('(.*)', '/login');
+        Route::permanentRedirect('{any}', '/login')->where('any', '.*');
     });
