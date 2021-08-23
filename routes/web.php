@@ -21,7 +21,7 @@ Auth::routes();
 
 Route::middleware('auth')
     ->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
         Route::resource('item', ItemController::class);
 
@@ -32,5 +32,4 @@ Route::middleware('auth')
 
 Route::middleware('guest')
     ->group(function () {
-        Route::permanentRedirect('{any}', '/login')->where('any', '.*');
     });
