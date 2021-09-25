@@ -55,7 +55,8 @@ class ItemTest extends TestCase
 
     public function test_create_item()
     {
-        Auth::login(User::first());
+//        Auth::login(User::first());
+        $this->signIn(User::first());
 
         $this->assertAuthenticated();
 

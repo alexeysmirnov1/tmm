@@ -65,7 +65,7 @@
     "extra": {
         "hooks": {
             "pre-commit": [
-                "vendor/bin/php-cs-fixer fix . --path-mode=intersection --dry-run -v"
+                "vendor/bin/php-cs-fixer fix . --path-mode=intersection --dry-run"
             ]
         },
         "laravel": {
