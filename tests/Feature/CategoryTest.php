@@ -1,12 +1,11 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\User;
 use Database\Seeders\CategoriesSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class CategoryTest extends TestCase
@@ -25,12 +24,13 @@ class CategoryTest extends TestCase
         $this->assertGuest();
 
         $this->get(route('category.index'))
-            ->assertRedirect();
+            ->assertStatus(302)
+            ->assertRedirect(route('login'));
     }
 
     public function test_user_can_get_categories()
     {
-        Auth::login(User::first());
+        $this->signIn(User::first());
 
         $this->assertAuthenticated();
 
@@ -40,7 +40,7 @@ class CategoryTest extends TestCase
 
     public function test_get_one_category()
     {
-        Auth::login(User::first());
+        $this->signIn(User::first());
 
         $this->assertAuthenticated();
 
@@ -55,20 +55,20 @@ class CategoryTest extends TestCase
 
     public function test_create_category()
     {
-        Auth::login(User::first());
+        $this->signIn(User::first());
 
         $this->assertAuthenticated();
 
         $this->get(route('category.create'))
             ->assertOk();
 
-        $this->get(route('category.store'))
+        $this->post(route('category.store'))
             ->assertOk();
     }
 
     public function test_update_category()
     {
-        Auth::login(User::first());
+        $this->signIn(User::first());
 
         $this->assertAuthenticated();
 
@@ -80,7 +80,7 @@ class CategoryTest extends TestCase
         )
             ->assertOk();
 
-        $this->get(
+        $this->post(
             route(
                 'category.update',
                 Category::first(),
@@ -91,7 +91,7 @@ class CategoryTest extends TestCase
 
     public function test_delete_category()
     {
-        Auth::login(User::first());
+        $this->signIn(User::first());
 
         $this->assertAuthenticated();
 

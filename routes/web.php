@@ -12,8 +12,11 @@
 */
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ItemController;
+use App\Http\Controllers\AssetsController;
+use App\Http\Controllers\LiabilityController;
+use App\Http\Controllers\PromotionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -21,15 +24,19 @@ Auth::routes();
 
 Route::middleware('auth')
     ->group(function () {
-        Route::get('/dashboard', DashboardController::class)->name('dashboard');
+        Route::get('/dashboard', DashboardController::class)
+            ->name('dashboard');
 
-        Route::resource('item', ItemController::class);
+        Route::resource('assets', AssetsController::class);
+
+        Route::resource('liabilities', LiabilityController::class);
+
+        Route::resource('clients', ClientController::class);
+
+        Route::resource('promotions', PromotionController::class);
 
         Route::resource('category', CategoryController::class);
 
-        Route::permanentRedirect('{any}', '/dashboard')->where('any', '.*');
-    });
-
-Route::middleware('guest')
-    ->group(function () {
+        Route::permanentRedirect('{any}', '/dashboard')
+            ->where('any', '.*');
     });

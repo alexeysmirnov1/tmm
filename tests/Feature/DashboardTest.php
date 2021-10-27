@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class DashboardTest extends TestCase
@@ -13,12 +12,13 @@ class DashboardTest extends TestCase
         $this->assertGuest();
 
         $this->get(route('dashboard'))
-            ->assertRedirect();
+            ->assertStatus(302)
+            ->assertRedirect(route('login'));
     }
 
     public function test_user_can_open_dashboard()
     {
-        Auth::login(User::first());
+        $this->signIn(User::first());
 
         $this->assertAuthenticated();
 

@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Item;
 use Illuminate\Database\Seeder;
 
-class ItemsSeeder extends Seeder
+class LiabilitiesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +13,5 @@ class ItemsSeeder extends Seeder
      */
     public function run()
     {
-        Item::factory()->count(5)->create();
     }
 }

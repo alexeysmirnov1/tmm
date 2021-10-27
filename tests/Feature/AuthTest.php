@@ -1,10 +1,9 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -13,6 +12,8 @@ class AuthTest extends TestCase
 
     public function testLoginFormOpens()
     {
+        $this->assertGuest();
+
         $this->get(route('login'))
             ->assertOk()
             ->assertSeeText('Login');
@@ -20,6 +21,8 @@ class AuthTest extends TestCase
 
     public function testRegistrationFormOpens()
     {
+        $this->assertGuest();
+
         $this->get(route('register'))
             ->assertOk()
             ->assertSeeText('Registration');
@@ -27,8 +30,12 @@ class AuthTest extends TestCase
 
     public function testUserCanLogout()
     {
-        Auth::login(User::find(1));
+        $this->signIn(User::first());
+
+        $this->assertAuthenticated();
+
         $this->post(route('logout'))
-            ->assertStatus(302);
+            ->assertStatus(302)
+            ->assertRedirect(route('login'));
     }
 }

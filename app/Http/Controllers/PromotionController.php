@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class ItemController extends Controller
+class PromotionController extends Controller
 {
     public function index(): View
     {
-        return view('items.index');
+        return view('promotions.index');
     }
 
     public function create()
