@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Liability;
+use App\Models\Promotion;
 use App\Models\User;
-use Database\Seeders\PromotionSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -15,8 +14,6 @@ class PromotionsTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->seed(PromotionSeeder::class);
     }
 
     public function test_guest_can_not_get_promotions()
@@ -46,7 +43,7 @@ class PromotionsTest extends TestCase
         $this->get(
             route(
                 'promotions.show',
-                Liability::first(),
+                Promotion::first(),
             )
         )
             ->assertOk();
@@ -74,7 +71,7 @@ class PromotionsTest extends TestCase
         $this->get(
             route(
                 'promotions.edit',
-                Liability::first(),
+                Promotion::first(),
             )
         )
             ->assertOk();
@@ -82,10 +79,11 @@ class PromotionsTest extends TestCase
         $this->post(
             route(
                 'promotions.update',
-                Liability::first(),
+                Promotion::first(),
             )
         )
-            ->assertOk();
+            ->assertStatus(301)
+            ->assertRedirect(route('dashboard'));
     }
 
     public function test_delete_promotion()
@@ -97,7 +95,7 @@ class PromotionsTest extends TestCase
         $this->get(
             route(
                 'promotions.destroy',
-                Liability::first(),
+                Promotion::first(),
             )
         )
             ->assertOk();

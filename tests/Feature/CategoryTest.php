@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\User;
-use Database\Seeders\CategoriesSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -15,8 +14,6 @@ class CategoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->seed(CategoriesSeeder::class);
     }
 
     public function test_guest_can_not_get_categories()
@@ -86,7 +83,8 @@ class CategoryTest extends TestCase
                 Category::first(),
             )
         )
-            ->assertOk();
+            ->assertStatus(301)
+            ->assertRedirect(route('dashboard'));
     }
 
     public function test_delete_category()

@@ -22,7 +22,8 @@ class PromotionFactory extends Factory
     public function definition()
     {
         return [
-            
+            'title' => $this->faker->title,
+            'percent' => $this->faker->numberBetween(0, 100),
         ];
     }
 }

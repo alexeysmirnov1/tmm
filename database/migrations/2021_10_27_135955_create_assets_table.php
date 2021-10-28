@@ -18,11 +18,13 @@ class CreateAssetsTable extends Migration
 
             $table->string('title');
 
-            $table->foreignId('category_id')
+            $table->foreignId('source_id')
                 ->constrained()
-                ->onDelete('null');
+                ->onDelete('set null');
 
-            $table->text('description');
+            $table->text('description')->nullable();
+
+            $table->timestamp('date');
 
             $table->timestamps();
         });

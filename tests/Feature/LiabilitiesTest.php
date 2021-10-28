@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Liability;
 use App\Models\User;
-use Database\Seeders\LiabilitiesSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -15,8 +14,6 @@ class LiabilitiesTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->seed(LiabilitiesSeeder::class);
     }
 
     public function test_guest_can_not_get_liabilities()
@@ -33,7 +30,7 @@ class LiabilitiesTest extends TestCase
 
         $this->assertAuthenticated();
 
-        $this->get(route('liabilities.index'))
+        $this->get(route('liabilities.index', [now()]))
             ->assertOk();
     }
 
@@ -85,7 +82,8 @@ class LiabilitiesTest extends TestCase
                 Liability::first(),
             )
         )
-            ->assertOk();
+            ->assertStatus(301)
+            ->assertRedirect(route('dashboard'));
     }
 
     public function test_delete_liability()

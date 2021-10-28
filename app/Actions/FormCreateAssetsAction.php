@@ -1,23 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Actions;
 
-use App\Actions\FormCreateAssetsAction;
 use App\Models\Asset;
 use App\Models\Source;
+use App\Repositories\AssetRepository;
+use App\Repositories\SourceRepository;
+use App\Services\WorkTimeService;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
-class AssetsController extends Controller
+class FormCreateAssetsAction
 {
-    public function index(): View
-    {
-        return view('assets.index');
-    }
-
-//    public function create(Request $request)
+//    public function execute(Request $request): array
 //    {
 //        $sources = Source::select(['id', 'title', 'time', 'color'])->get();
 //
@@ -55,42 +51,41 @@ class AssetsController extends Controller
 //
 //        $workTime = $workTime->diff($exceptedTime);
 //
-//        return view(
-//            'assets.create',
-//            compact(
-//                'sources',
-//                'workTime'
-//            ),
+//        return compact(
+//            'sources',
+//            'workTime'
 //        );
 //    }
 
-    public function create(Request $request, FormCreateAssetsAction $action)
+    private SourceRepository $sourceRepository;
+    private AssetRepository $assetRepository;
+    private WorkTimeService $workTimeService;
+
+    public function __construct(
+        SourceRepository $sourceRepository,
+        AssetRepository $assetRepository,
+        WorkTimeService $workTimeService
+    ) {
+        $this->sourceRepository = $sourceRepository;
+        $this->assetRepository = $assetRepository;
+        $this->workTimeService = $workTimeService;
+    }
+
+    public function execute(Request $request): array
     {
-        return view(
-            'assets.create',
-            $action->execute($request),
+        $sources = $this->sourceRepository->getAll();
+
+        $assets = $this->assetRepository->getForDay($request->date);
+
+        $workTime = $this->workTimeService->generateIntervalForDay($request->date);
+
+        $exceptedTime = $this->workTimeService->generateDurationIntervalForAssets($assets);
+
+        $workTime = $workTime->diff($exceptedTime);
+
+        return compact(
+            'sources',
+            'workTime'
         );
-    }
-
-    public function store(Request $request)
-    {
-    }
-
-    public function show(Asset $asset)
-    {
-        return view('assets.show', compact('asset'));
-    }
-
-    public function edit(Asset $asset)
-    {
-        return view('assets.edit', compact('asset'));
-    }
-
-    public function update(Request $request, $id)
-    {
-    }
-
-    public function destroy($id)
-    {
     }
 }

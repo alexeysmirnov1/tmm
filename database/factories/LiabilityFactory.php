@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use App\Models\Liability;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,6 +25,7 @@ class LiabilityFactory extends Factory
         return [
             'title' => $this->faker->title,
             'description' => $this->faker->text,
+            'category_id' => Category::first(),
         ];
     }
 }

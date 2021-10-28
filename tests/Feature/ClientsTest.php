@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Liability;
+use App\Models\Client;
 use App\Models\User;
-use Database\Seeders\ClientSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -15,8 +14,6 @@ class ClientsTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->seed(ClientSeeder::class);
     }
 
     public function test_guest_can_not_get_clients()
@@ -46,7 +43,7 @@ class ClientsTest extends TestCase
         $this->get(
             route(
                 'clients.show',
-                Liability::first(),
+                Client::first(),
             )
         )
             ->assertOk();
@@ -74,7 +71,7 @@ class ClientsTest extends TestCase
         $this->get(
             route(
                 'clients.edit',
-                Liability::first(),
+                Client::first(),
             )
         )
             ->assertOk();
@@ -82,10 +79,11 @@ class ClientsTest extends TestCase
         $this->post(
             route(
                 'clients.update',
-                Liability::first(),
+                Client::first(),
             )
         )
-            ->assertOk();
+            ->assertStatus(301)
+            ->assertRedirect(route('dashboard'));
     }
 
     public function test_delete_client()
@@ -97,7 +95,7 @@ class ClientsTest extends TestCase
         $this->get(
             route(
                 'clients.destroy',
-                Liability::first(),
+                Client::first(),
             )
         )
             ->assertOk();

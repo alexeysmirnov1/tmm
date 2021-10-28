@@ -14,6 +14,10 @@ class AssetsSeeder extends Seeder
      */
     public function run()
     {
+        Asset::factory()->create([
+            'date' => '2021-10-27 11:00:00',
+        ]);
+
         Asset::factory()->count(5)->create();
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLiabilitiesTable extends Migration
+class CreateSourcesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,12 @@ class CreateLiabilitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('liabilities', function (Blueprint $table) {
+        Schema::create('sources', function (Blueprint $table) {
             $table->id();
-
             $table->string('title');
-
-            $table->foreignId('category_id')
-                ->constrained()
-                ->onDelete('set null');
-
-            $table->text('description');
-
+            $table->string('description')->nullable();
+            $table->string('color')->default('#fff');
+            $table->time('time');
             $table->timestamps();
         });
     }
@@ -35,6 +30,6 @@ class CreateLiabilitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('liabilities');
+        Schema::dropIfExists('sources');
     }
 }

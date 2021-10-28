@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Asset;
+use App\Models\Source;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AssetFactory extends Factory
@@ -24,6 +25,8 @@ class AssetFactory extends Factory
         return [
             'title' => $this->faker->title,
             'description' => $this->faker->text,
+            'source_id' => Source::first(),
+            'date' => $this->faker->date(),
         ];
     }
 }

@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Asset;
 use App\Models\User;
-use Database\Seeders\AssetsSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -15,8 +14,6 @@ class AssetsTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->seed(AssetsSeeder::class);
     }
 
     public function test_guest_can_not_get_assets()
@@ -59,8 +56,15 @@ class AssetsTest extends TestCase
 
         $this->assertAuthenticated();
 
-        $this->get(route('assets.create'))
-            ->assertOk();
+        $request = [
+            'date' => '2021-10-27',
+        ];
+
+        $this->get(route('assets.create', $request))
+            ->assertOk()
+            ->assertSeeText('Create asset')
+            ->assertViewHas('sources')
+            ->assertViewHas('workTime');
 
         $this->post(route('assets.store'))
             ->assertOk();
@@ -86,7 +90,8 @@ class AssetsTest extends TestCase
                 Asset::first(),
             )
         )
-            ->assertOk();
+            ->assertStatus(301)
+            ->assertRedirect(route('dashboard'));
     }
 
     public function test_delete_asset()
