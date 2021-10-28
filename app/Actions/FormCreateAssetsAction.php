@@ -71,13 +71,13 @@ class FormCreateAssetsAction
         $this->workTimeService = $workTimeService;
     }
 
-    public function execute(Request $request): array
+    public function execute(array $request): array
     {
         $sources = $this->sourceRepository->getAll();
 
-        $assets = $this->assetRepository->getForDay($request->date);
+        $assets = $this->assetRepository->getForDay($request['date']);
 
-        $workTime = $this->workTimeService->generateIntervalForDay($request->date);
+        $workTime = $this->workTimeService->generateIntervalForDay($request['date']);
 
         $exceptedTime = $this->workTimeService->generateDurationIntervalForAssets($assets);
 

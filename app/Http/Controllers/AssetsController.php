@@ -68,7 +68,7 @@ class AssetsController extends Controller
     {
         return view(
             'assets.create',
-            $action->execute($request),
+            $action->execute($request->all()),
         );
     }
 
