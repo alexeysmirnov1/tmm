@@ -1,4 +1,4 @@
-ARG PHP_VERSION
+ARG PHP_VERSION=8.1
 FROM registry.gitlab.com/flagstudio/laraflag:php-${PHP_VERSION}-base-debian
 
 # Add a non-root user to prevent files being created with root permissions on host machine.

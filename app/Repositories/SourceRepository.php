@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Models\Source;
-use Illuminate\Support\Collection;
+use App\Aggregates\Source\Source;
+use App\Values\Id;
 
 class SourceRepository
 {
-    public function getAll(): Collection
+    public function find(Id $id): Source
     {
-        return Source::select(['id', 'title', 'time', 'color'])->get();
+
     }
 }

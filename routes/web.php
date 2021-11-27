@@ -14,7 +14,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AssetsController;
+use App\Http\Controllers\DebitController;
 use App\Http\Controllers\LiabilityController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\SourceController;
@@ -28,9 +28,7 @@ Route::middleware('auth')
         Route::get('/dashboard', DashboardController::class)
             ->name('dashboard');
 
-        Route::get('/assets/create/{date}')
-            ->name('assets.create');
-        Route::resource('assets', AssetsController::class);
+        Route::resource('debit', DebitController::class);
 
         Route::resource('liabilities', LiabilityController::class);
 

@@ -21,7 +21,7 @@ class DefaultSeeder extends Seeder
             ClientSeeder::class,
             PromotionSeeder::class,
             SourceSeeder::class,
-            AssetsSeeder::class,
+            DebitSeeder::class,
         ]);
     }
 }
