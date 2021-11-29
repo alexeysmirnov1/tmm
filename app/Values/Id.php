@@ -2,19 +2,14 @@
 
 namespace App\Values;
 
-use Illuminate\Support\Str;
+use App\Contracts\ValueObjectContract;
 
-class Id
+class Id implements ValueObjectContract
 {
     public function __construct(
         private int $id
     ) {
     }
-
-//    public static function next(): self
-//    {
-//        return new self(Str::uuid()->toString());
-//    }
 
     public function getValue(): int
     {
