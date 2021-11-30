@@ -10,6 +10,10 @@ class Debit extends Model
 {
     use HasFactory;
 
+    protected $dates = [
+        'date',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
