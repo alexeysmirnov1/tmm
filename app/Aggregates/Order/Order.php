@@ -1,25 +1,24 @@
 <?php
 
-namespace App\Aggregates\Debit;
+namespace App\Aggregates\Order;
 
 use App\Aggregates\AbstractAggregateRoot;
 use App\Aggregates\Action\Action;
 use App\Aggregates\Customer\Customer;
-use App\Aggregates\Source\Source;
-use App\Events\Debit\DebitActionApplied;
-use App\Events\Debit\DebitDescriptionChanged;
-use App\Events\Debit\DebitMoved;
-use App\Events\Debit\DebitStatusChanged;
-use App\Events\Debit\DebitTitleChanged;
-use App\Exceptions\Debit\DebitCanNotTransitionStatusException;
-use App\Exceptions\Debit\DebitDateTimeException;
+use App\Events\Order\OrderActionApplied;
+use App\Events\Order\OrderDescriptionChanged;
+use App\Events\Order\OrderMoved;
+use App\Events\Order\OrderStatusChanged;
+use App\Events\Order\OrderTitleChanged;
+use App\Exceptions\Order\OrderCanNotTransitionStatusException;
+use App\Exceptions\Order\OrderDateTimeException;
 use App\Values\DateTime;
 use App\Values\Id;
 use App\Values\Status;
 use App\Values\Text;
 use App\Values\Title;
 
-class Debit extends AbstractAggregateRoot
+class Order extends AbstractAggregateRoot
 {
     public function __construct(
         private Id $id,
@@ -27,7 +26,6 @@ class Debit extends AbstractAggregateRoot
         private Text $description,
         private DateTime $dateTime,
         private Customer $customer,
-        private Source $source,
         private Status $status,
         private ?Action $action = null,
     ) {
@@ -37,7 +35,7 @@ class Debit extends AbstractAggregateRoot
     {
         $this->title = $title;
         $this->sendEvent(
-            new DebitTitleChanged($this->getId(), $title)
+            new OrderTitleChanged($this->getId(), $title)
         );
     }
 
@@ -45,19 +43,19 @@ class Debit extends AbstractAggregateRoot
     {
         $this->description = $description;
         $this->sendEvent(
-            new DebitDescriptionChanged($this->getId(), $description)
+            new OrderDescriptionChanged($this->getId(), $description)
         );
     }
 
     public function move(DateTime $dateTime): void
     {
         if($this->getDateTime()->equal($dateTime)) {
-            throw new DebitDateTimeException;
+            throw new OrderDateTimeException;
         }
 
         $this->dateTime = $dateTime;
         $this->sendEvent(
-            new DebitMoved($this->getId(), $dateTime)
+            new OrderMoved($this->getId(), $dateTime)
         );
     }
 
@@ -65,27 +63,19 @@ class Debit extends AbstractAggregateRoot
     {
         $this->customer = $customer;
         $this->sendEvent(
-            new DebitCustomerChanged($this->getId(), $customer)
-        );
-    }
-
-    public function changeSource(Source $source): void
-    {
-        $this->source = $source;
-        $this->sendEvent(
-            new DebitSourceChanged($this->getId(), $source)
+            new OrderCustomerChanged($this->getId(), $customer)
         );
     }
 
     public function changeStatus(Status $status): void
     {
         if(!$this->getStatus()->canTransiteTo($status)) {
-            throw new DebitCanNotTransitionStatusException;
+            throw new OrderCanNotTransitionStatusException;
         }
 
         $this->status = $status;
         $this->sendEvent(
-            new DebitStatusChanged($this->getId(), $status)
+            new OrderStatusChanged($this->getId(), $status)
         );
     }
 
@@ -93,7 +83,7 @@ class Debit extends AbstractAggregateRoot
     {
         $this->action = $action;
         $this->sendEvent(
-            new DebitActionApplied($this->getId(), $action)
+            new OrderActionApplied($this->getId(), $action)
         );
     }
 
@@ -122,11 +112,6 @@ class Debit extends AbstractAggregateRoot
         return $this->customer;
     }
 
-    public function getSource(): Source
-    {
-        return $this->source;
-    }
-
     public function getStatus(): Status
     {
         return $this->status;
@@ -139,16 +124,6 @@ class Debit extends AbstractAggregateRoot
 
     public function getPrice(): float
     {
-        $sourcePrice = $this->getSource()->getPrice();
-
-        if(!$this->getAction()) {
-            return $sourcePrice;
-        }
-
-        if($this->getAction()->inPercent()) {
-            return $sourcePrice * $this->getAction()->getValue();
-        }
-
-        return $sourcePrice - $this->getAction()->getValue();
+        return 0;
     }
 }

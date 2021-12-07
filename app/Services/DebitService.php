@@ -6,7 +6,7 @@ use App\DTO\CreateDebitData;
 use App\Aggregates\Debit\Debit;
 use App\Exceptions\Action\ActionNotFound;
 use App\Exceptions\Customer\CustomerNotFound;
-use App\Exceptions\Debit\DebitNotFound;
+use App\Exceptions\Order\DebitNotFound;
 use App\Exceptions\Source\SourceNotFound;
 use App\Repositories\ActionRepository;
 use App\Repositories\CustomerRepository;

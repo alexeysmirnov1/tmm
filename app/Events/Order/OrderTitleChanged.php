@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Events\Debit;
+namespace App\Events\Order;
 
 use App\Contracts\DomainEventContract;
 use App\Values\Id;
 use App\Values\Title;
 
-class DebitTitleChanged implements DomainEventContract
+class OrderTitleChanged implements DomainEventContract
 {
     public function __construct(
         private Id $id,
