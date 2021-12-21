@@ -2,31 +2,24 @@
 
 namespace App\Providers;
 
+use App\Scopes\ShownScope;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
         if (app()->environment('production')) {
             error_reporting(E_ALL ^ E_NOTICE);
         }
     }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
-        if ($this->app->isLocal() || mb_strtolower(app()->environment()) === 'dev') {
-            $this->app->register(TelescopeServiceProvider::class);
-        }
+//        Article::addGlobalScope(new ShownScope);
+//        News::addGlobalScope(new ShownScope);
+//        Post::addGlobalScope(new ShownScope);
+//        Product::addGlobalScope(new ShownScope);
+//        Category::addGlobalScope(new ShownScope);
     }
 }

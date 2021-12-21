@@ -24,6 +24,7 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
+            'role' => 'admin',
         ];
     }
 }

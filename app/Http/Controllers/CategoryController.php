@@ -2,37 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use App\Http\Requests\CreateCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 
 class CategoryController extends Controller
 {
-    public function index(): View
+    public function store(CreateCategoryRequest $request)
     {
-        return view('categories.index');
+        dd(123);
     }
 
-    public function create()
+    public function update(UpdateCategoryRequest $request)
     {
-    }
-
-    public function store(Request $request)
-    {
-    }
-
-    public function show($id)
-    {
-    }
-
-    public function edit($id)
-    {
-    }
-
-    public function update(Request $request, $id)
-    {
-    }
-
-    public function destroy($id)
-    {
+        dd(123);
     }
 }
