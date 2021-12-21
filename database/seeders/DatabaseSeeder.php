@@ -16,13 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             SettingsSeeder::class,
-            ProductSeeder::class
-//            CategoriesSeeder::class,
-//            LiabilitiesSeeder::class,
-//            ClientSeeder::class,
-//            PromotionSeeder::class,
-//            SourceSeeder::class,
-//            AssetsSeeder::class,
+            ProductSeeder::class,
+            CategoriesSeeder::class,
         ]);
     }
 }

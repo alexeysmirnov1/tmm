@@ -4,16 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
-    public function store(CreateCategoryRequest $request)
+    public function index()
     {
-        dd(123);
-    }
+//        $categories = Category::oldest()
+//              ->get()
+//              ->toTree();
 
-    public function update(UpdateCategoryRequest $request)
-    {
-        dd(123);
+//        $categories = Category::oldest()
+//            ->whereIsAfter(20)
+//            ->get()
+//            ->toTree();
+
+        $categories = Category::descendantsAndSelf(19)->toTree();
+
+        return view(
+            'categories.index',
+            compact('categories'),
+        );
     }
 }
