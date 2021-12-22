@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Actions\FormCreateAssetAction;
+use App\DTO\FormCreateAssetData;
+use App\Http\Requests\CreateAssetRequest;
 use App\Models\Asset;
-use App\Models\Source;
-use Carbon\Carbon;
-use Carbon\CarbonInterval;
+use Elasticsearch\Endpoints\Create;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -17,11 +17,13 @@ class AssetsController extends Controller
         return view('assets.index');
     }
 
-    public function create(Request $request, FormCreateAssetAction $action)
+    public function create(CreateAssetRequest $request, FormCreateAssetAction $action)
     {
+        $dto = FormCreateAssetData::fromRequest($request);
+
         return view(
             'assets.create',
-            $action->execute($request),
+            $action->execute($dto),
         );
     }
 

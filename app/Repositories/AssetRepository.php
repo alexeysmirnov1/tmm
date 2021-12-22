@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\DTO\DayDTO;
 use App\Models\Asset;
 use Illuminate\Support\Collection;
 
