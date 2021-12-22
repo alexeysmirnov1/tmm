@@ -11,12 +11,15 @@ class CategoriesSeeder extends Seeder
     {
         $categories = [
             'title' => 'Электроника',
+            'slug' => 'electronics',
             'children' => [
                 [
                     'title' => 'Компьютеры',
+                    'slug' => 'computers',
                     'children' => [
                         [
                             'title' => 'Комплектующие',
+                            'slug' => 'accessories',
                             'children' => [
                                 ['title' => 'Процессор'],
                                 ['title' => 'Оперативная память'],
@@ -36,9 +39,11 @@ class CategoriesSeeder extends Seeder
                 ],
                 [
                     'title' => 'Ноутбуки, планшеты',
+                    'slug' => 'laptops-and-tabs',
                     'children' => [
                         [
                             'title' => 'Ноутбуки',
+                            'slug' => 'laptops',
                             'children' => [
                                 ['title' => 'Apple'],
                                 ['title' => 'ASUS'],
@@ -50,6 +55,7 @@ class CategoriesSeeder extends Seeder
                         ],
                         [
                             'title' => 'Планшеты',
+                            'slug' => 'tabs',
                             'children' => [
                                 ['title' => 'Apple'],
                                 ['title' => 'Samsung'],
@@ -61,7 +67,7 @@ class CategoriesSeeder extends Seeder
             ],
         ];
 
-//        Category::create($categories);
+        Category::create($categories);
 
         $categories = [
             'title' => 'Одежда и обувь',
