@@ -11,9 +11,9 @@ class Product extends Model
 {
     use HasFactory;
 
-    public function attributes(): HasMany
+    public function attributes(): BelongsToMany
     {
-        return $this->hasMany(ProductAttribute::class);
+        return $this->belongsToMany(Attribute::class)->withPivot('value');
     }
 
     public function categories(): BelongsToMany

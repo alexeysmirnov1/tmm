@@ -6,12 +6,18 @@ use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryProductsResource;
 use App\Models\Category;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
+    public function __construct(
+        private ProductRepository $productRepository,
+    ) {}
+
+
     public function index(): View
     {
         $categories = Category::oldest()
@@ -33,9 +39,11 @@ class CategoryController extends Controller
 
     public function show(Request $request, Category $category): JsonResponse|View
     {
-        $products = $category->products()
-            ->with('attributes.attribute')
-            ->paginate(25);
+//        $products = $category->products()
+//            ->with('attributes.attribute')
+//            ->paginate(25);
+
+        $products = $this->productRepository->byCategory($category);
 
         if($request->wantsJson()) {
             return response()->json([

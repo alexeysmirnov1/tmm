@@ -7,7 +7,7 @@
     <p>Характеристики:</p>
     <ul>
         @foreach($product->attributes as $attribute)
-            <li>{{ $attribute->attribute->title }}: {{ $attribute->value }}</li>
+            <li>{{ $attribute->title }}: {{ $attribute->pivot->value }}</li>
         @endforeach
     </ul>
 </div>
