@@ -16,8 +16,7 @@ class CreateAttributesTable extends Migration
         Schema::create('attributes', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('type');
-            $table->jsonb('options')->nullable();
+            $table->foreignId('attribute_type_id')->constrained();
             $table->timestamps();
         });
     }

@@ -20,7 +20,7 @@ class ProductRepository extends BaseRepository
     public function byCategory(Category $category)
     {
         return $this->with('attributes')
-            ->pushCriteria(new CategoryCriteria($category))
+//            ->pushCriteria(new CategoryCriteria($category))
             ->pushCriteria(NotDeletedCriteria::class)
             ->paginate(self::PER_PAGE);
     }
