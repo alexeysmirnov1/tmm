@@ -35,7 +35,7 @@ class AttributeSeeder extends Seeder
             ],
         ];
 
-        $this->createAttributes(Product::find(1), $attributeTypes);
+//        $this->createAttributes(Product::find(1), $attributeTypes);
 
         $attributeTypes = [
             [
@@ -63,7 +63,7 @@ class AttributeSeeder extends Seeder
             ],
         ];
 
-        $this->createAttributes(Product::find(2), $attributeTypes);
+//        $this->createAttributes(Product::find(2), $attributeTypes);
 
         $attributeTypes = [
             [
@@ -106,7 +106,7 @@ class AttributeSeeder extends Seeder
             ],
         ];
 
-        $this->createAttributes(Product::find(3), $attributeTypes);
+//        $this->createAttributes(Product::find(3), $attributeTypes);
 
         $attributeTypes = [
             [
@@ -146,17 +146,17 @@ class AttributeSeeder extends Seeder
             ],
         ];
 
-        $this->createAttributes(Product::find(4), $attributeTypes);
+//        $this->createAttributes(Product::find(4), $attributeTypes);
 
         //testing dataset
         $types = AttributeType::factory()
-            ->count(666)
+            ->count(rand(3, 44))
             ->create();
 
-        $attributes = collect();
+        $attributes = Attribute::all();
         foreach ($types as $type) {
             $attrs = Attribute::factory()
-                ->count(rand(3, 8))
+                ->count(rand(1, 16))
                 ->create([
                     'attribute_type_id' => $type->id,
                 ]);
@@ -164,8 +164,11 @@ class AttributeSeeder extends Seeder
             $attributes->push(...$attrs);
         }
 
-        Product::where('id', '>', 159000)
-            ->get()
+//        Product::where('id', '>', 4)->get();
+        Product::factory()
+            ->admin()
+            ->count(20000)
+            ->create()
             ->each(function ($product) use ($attributes) {
                 $countAttributes = rand(5, 30);
                 $attach = array_combine(
