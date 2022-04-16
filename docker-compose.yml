@@ -31,24 +31,9 @@ services:
 #      - ./docker/ssl/Caddyfile_SSL:/etc/Caddyfile
 
 
-  ### MySQL ################################################
-  mysql:
-    image: registry.gitlab.com/flagstudio/laraflag:mysql-8.0-base
-    environment:
-      - MYSQL_DB=${DB_DATABASE}
-      - MYSQL_USER=${DB_USERNAME}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
-    volumes:
-      - ${DATA_PATH_HOST}/mysql:/var/lib/mysql:delegated
-    ports:
-      - "127.0.0.1:3306:3306"
-    restart: always
-
-
   ### PostgreSQL ###########################################
   postgres:
-    image: postgres:12-alpine
+    image: postgres:13-alpine
     command: postgres
     environment:
       - POSTGRES_DB=${DB_DATABASE}
@@ -58,44 +43,3 @@ services:
       - ${DATA_PATH_HOST}/postgres:/var/lib/postgresql/data:delegated
     ports:
       - "127.0.0.1:5432:5432"
-
-  ### ElasticSearch ########################################
-  elasticsearch:
-    image: registry.gitlab.com/flagstudio/laraflag:elasticsearch-7.6.2
-    volumes:
-      - ${ELASTICSEARCH_CONFIG_PATH}:/usr/share/elasticsearch/data:delegated
-    environment:
-      - cluster.name=laradock-cluster
-      - node.name=laradock-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - cluster.initial_master_nodes=laradock-node
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - "127.0.0.1:${ELASTICSEARCH_HOST_HTTP_PORT}:9200"
-      - "127.0.0.1:${ELASTICSEARCH_HOST_TRANSPORT_PORT}:9300"
-
-  elastichq:
-    image: elastichq/elasticsearch-hq
-    ports:
-      - 5000:5000
-    depends_on:
-      - elasticsearch
-
-  ### NetData ################################################
-  netdata:
-    image: netdata/netdata:latest
-    cap_add:
-      - SYS_PTRACE
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./docker/netdata/health.d:/etc/netdata/health.d
-      - ./docker/netdata/health_alarm_notify.conf:/etc/netdata/health_alarm_notify.conf
-      - ./docker/netdata/netdata.conf:/etc/netdata/netdata.conf
-    ports:
-      - "127.0.0.1:${NETDATA_PORT}:19999"

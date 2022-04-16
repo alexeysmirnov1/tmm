@@ -2,37 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoryProductsResource;
+use App\Models\Category;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
+    private ProductRepository $productRepository;
+
+    public function __construct(ProductRepository $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
     public function index(): View
     {
-        return view('categories.index');
+        $categories = Category::all()->toTree();
+
+//        $categories = Category::whereIsAfter(2)->get()->toTree();
+
+//        $categories = Category::descendantsAndSelf(2)->toTree();
+
+        return view('categories.index', compact('categories'));
     }
 
-    public function create()
+    public function show(Request $request, Category $category)
     {
-    }
+//        $products = $category->products()
+//            ->with('attributes')
+//            ->paginate(25);
 
-    public function store(Request $request)
-    {
-    }
+        $products = $this->productRepository->byCategory($category);
 
-    public function show($id)
-    {
-    }
+        if($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'data' => CategoryProductsResource::collection($products),
+            ]);
+        }
 
-    public function edit($id)
-    {
-    }
-
-    public function update(Request $request, $id)
-    {
-    }
-
-    public function destroy($id)
-    {
+        return view(
+            'categories.show',
+            compact(
+                'products'
+            ),
+        );
     }
 }

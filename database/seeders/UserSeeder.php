@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
+use App\Models\Moderator;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -16,15 +18,22 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        if (!config('app.admin_password')) {
-            throw new \Exception('Environment variable ADMIN_PASSWORD is required. You can set it in .env file');
+        if(! Admin::whereEmail('admin@flagstudio.ru')->exists()) {
+            Admin::factory()->create([
+                'name' => 'Admin',
+                'email' => 'admin@flagstudio.ru',
+                'password' => bcrypt('admin'), // secret
+                'email_verified_at' => now(),
+            ]);
         }
 
-        User::factory()->create([
-            'name' => 'Flagstudio',
-            'email' => 'forspam@flagstudio.ru',
-            'password' => bcrypt(config('app.admin_password')), // secret
-            'email_verified_at' => now(),
-        ]);
+        if(! Moderator::whereEmail('moderator@flagstudio.ru')->exists()) {
+            Moderator::factory()->create([
+                'name' => 'Moderator',
+                'email' => 'moderator@flagstudio.ru',
+                'password' => bcrypt('admin'), // secret
+                'email_verified_at' => now(),
+            ]);
+        }
     }
 }
