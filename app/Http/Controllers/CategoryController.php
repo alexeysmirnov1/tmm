@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\ProductRepositoryContract;
 use App\Http\Resources\CategoryProductsResource;
 use App\Models\Category;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    private ProductRepository $productRepository;
+    private ProductRepositoryContract $productRepository;
 
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(ProductRepositoryContract $productRepository)
     {
         $this->productRepository = $productRepository;
     }
@@ -20,19 +22,11 @@ class CategoryController extends Controller
     {
         $categories = Category::all()->toTree();
 
-//        $categories = Category::whereIsAfter(2)->get()->toTree();
-
-//        $categories = Category::descendantsAndSelf(2)->toTree();
-
         return view('categories.index', compact('categories'));
     }
 
     public function show(Request $request, Category $category)
     {
-//        $products = $category->products()
-//            ->with('attributes')
-//            ->paginate(25);
-
         $products = $this->productRepository->byCategory($category);
 
         if($request->wantsJson()) {

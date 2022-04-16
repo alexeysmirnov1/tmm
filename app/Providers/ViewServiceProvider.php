@@ -8,21 +8,7 @@ use Illuminate\Support\ServiceProvider;
 
 class ViewServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-    }
-
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
         View::composer('layouts.app', function ($view) {
             $settings = Settings::whereSlug(Settings::METRICS_SLUG)->first();
