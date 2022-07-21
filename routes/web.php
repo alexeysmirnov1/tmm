@@ -11,17 +11,19 @@
 |
 */
 
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RentRequestController;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::get('/categories', [CategoryController::class, 'index'])
-    ->name('categories.index');
+Route::middleware('auth')
+    ->group(function () {
+        Route::get('/rent/requests', [RentRequestController::class, 'index'])
+            ->name('rent.requests.index');
+    });
 
-Route::get('/categories/{category}', [CategoryController::class, 'show'])
-    ->name('categories.show');
-
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::middleware('guest')
+    ->group(function () {
+        Route::post('/rent/requests', [RentRequestController::class, 'store'])
+            ->name('rent.requests.store');
+    });

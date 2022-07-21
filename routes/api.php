@@ -1,6 +1,11 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\V1\AuthorBookController;
+use App\Http\Controllers\API\V1\BookAuthorController;
+use App\Http\Controllers\API\V1\CategoryController;
+use App\Http\Controllers\API\V1\CategoryProductController;
+use App\Http\Controllers\API\V1\ProductController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +17,20 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// Closure breacking php artisan route:cache
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+
+Route::prefix('v1')
+    ->name('v1')
+    ->group(function () {
+        Route::apiResource('products', ProductController::class);
+
+        Route::apiResource('categories', CategoryController::class);
+
+        Route::get('/categories/{category}/products', [CategoryProductController::class, 'index']);
+        Route::post('/categories/{category}/products', [CategoryProductController::class, 'store']);
+
+        Route::get('/books/{book}/authors', [BookAuthorController::class, 'index']);
+        Route::post('/books/{book}/authors', [BookAuthorController::class, 'store']);
+
+        Route::get('/authors/{author}/books', [AuthorBookController::class, 'index']);
+        Route::post('/authors/{author}/books', [AuthorBookController::class, 'store']);
+    });

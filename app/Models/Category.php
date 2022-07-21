@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Category extends Model
@@ -12,15 +12,10 @@ class Category extends Model
     use HasFactory;
     use NodeTrait;
 
-    public const SLUG_ELECTRONICS = 'electronics';
+    protected $guarded = [];
 
-    public function getRouteKeyName()
+    public function products(): HasMany
     {
-        return 'slug';
-    }
-
-    public function products(): BelongsToMany
-    {
-        return $this->belongsToMany(Product::class);
+        return $this->hasMany(Product::class);
     }
 }

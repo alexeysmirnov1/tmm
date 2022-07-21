@@ -8,47 +8,71 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.4",
-        "64robots/nova-fields": "^0.17.0",
+        "php": "^8.1",
+        "ext-json": "*",
+        "ext-mongodb": "^1.12.0",
+        "ext-redis": "*",
+        "64robots/nova-fields": "^0.22.0",
+        "alexbowers/nova-categorise-resources": "^1.0",
         "ampeco/nova-date-range-filter": "^0.1.1",
         "babenkoivan/scout-elasticsearch-driver": "^4.2",
+        "baethon/laravel-criteria": "^1.0",
+        "barryvdh/laravel-dompdf": "^1.0",
+        "benjacho/belongs-to-many-field": "^2.0",
+        "cloudcake/nova-fixed-bars": "^1.1",
+        "diezg/collapsible": "^0.0.2",
         "doctrine/dbal": "^2.10.2",
+        "drandin/declension-nouns": "dev-master",
         "ebess/advanced-nova-media-library": "^3.0",
         "emilianotisato/nova-tinymce": "v0.5.4",
         "eminiarts/nova-tabs": "^1.2",
+        "epartment/nova-dependency-container": "^1.3",
+        "fakerphp/faker": "^1.9.1",
         "fideloper/proxy": "^4.4",
         "flagstudio/nova-actions-left": "^0.2.0",
-        "flagstudio/nova-admin-bar": "^0.2.0",
+        "flagstudio/nova-admin-bar": "^0.4",
         "flagstudio/nova-contacts": "*",
         "flagstudio/nova-instructions": "*",
         "fourstacks/nova-repeatable-fields": "^1.3",
+        "illuminate/support": "^8.69",
+        "interaction-design-foundation/laravel-geoip": "^3.1",
         "jenssegers/date": "^4.0",
+        "jenssegers/mongodb": "^3.8",
         "kalnoy/nestedset": "^6.0",
-        "laravel/framework": "^8.5",
+        "knuckleswtf/scribe": "^3.9",
+        "laravel/framework": "^8.83",
         "laravel/helpers": "^1.2",
         "laravel/nova": "^3.0",
         "laravel/telescope": "^4.0",
         "laravel/tinker": "^2.0",
-        "prettus/l5-repository": "^2.7",
-        "spatie/data-transfer-object": "^2.8",
+        "marshmallow/nova-styling": "^2.0",
+        "predis/predis": "^1.1",
+        "sentry/sentry-laravel": "^2.11",
+        "slash2nl/nova-back-button": "^1.0",
+        "spatie/data-transfer-object": "^3.7.2",
         "spatie/eloquent-sortable": "^3.8",
         "spatie/image-optimizer": "^1.2",
         "spatie/laravel-image-optimizer": "^1.6",
-        "spatie/laravel-medialibrary": "^8.3",
+        "spatie/laravel-medialibrary": "^9.0",
         "spatie/laravel-missing-page-redirector": "^2.5",
+        "spatie/laravel-sitemap": "^5.9",
         "spatie/laravel-tail": "^4.2",
+        "symfony/property-access": "^6.0",
+        "tymon/jwt-auth": "^1.0",
         "whitecube/nova-flexible-content": "^0.2"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.2",
-        "barryvdh/laravel-ide-helper": "^2.0",
+        "barryvdh/laravel-debugbar": "^3.6",
+        "barryvdh/laravel-ide-helper": "^2.10",
         "beyondcode/laravel-dump-server": "^1.0",
-        "brainmaestro/composer-git-hooks": "^2.8",
-        "friendsofphp/php-cs-fixer": "^2.15",
-        "fzaninotto/faker": "^1.9",
-        "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.0"
+        "beyondcode/laravel-query-detector": "^1.6",
+        "imanghafoori/laravel-microscope": "^1.0",
+        "mockery/mockery": "^1.4",
+        "nunomaduro/collision": "^5.8",
+        "nunomaduro/larastan": "^0.7.12",
+        "nunomaduro/phpinsights": "^2.1",
+        "phpunit/phpunit": "^9.3.3",
+        "spatie/laravel-ignition": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -66,13 +90,10 @@
         }
     },
     "extra": {
-        "hooks": {
-            "pre-commit": [
-                "vendor/bin/php-cs-fixer fix . --path-mode=intersection --dry-run -v"
-            ]
-        },
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/telescope"
+            ]
         }
     },
     "scripts": {
@@ -84,16 +105,26 @@
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover"
+            "@php artisan package:discover --ansi",
+            "mkdir -p .git/hooks && cp tools/git-hooks/pre-commit .git/hooks/pre-commit"
         ],
-        "cghooks": "vendor/bin/cghooks",
-        "post-install-cmd": "cghooks add --ignore-lock",
-        "post-update-cmd": "cghooks update"
+        "post-update-cmd": [
+            "@php artisan nova:publish",
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:meta"
+        ],
+        "csfix": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix . --config=/var/www/.php-cs-fixer.dist.php --path-mode=intersection --using-cache=no --allow-risky=yes",
+        "csfix-validate": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix . --config=/var/www/.php-cs-fixer.dist.php --path-mode=intersection --using-cache=no --allow-risky=yes --dry-run -v",
+        "autotests": "vendor/bin/phpunit --testdox --do-not-cache-result"
     },
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

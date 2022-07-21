@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
             ->giveConfig('robokassa.username');
 
         $this->app->resolving(function ($object, $app) {
-            
+
         });
     }
 }

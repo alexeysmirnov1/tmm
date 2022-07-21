@@ -17,8 +17,9 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('title');
             $table->integer('price');
-            $table->boolean('deleted')->default(false);
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('category_id')
+                ->nullable()
+                ->constrained();
             $table->timestamps();
         });
     }

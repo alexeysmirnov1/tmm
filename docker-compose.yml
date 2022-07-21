@@ -1,35 +1,104 @@
-version: '3'
+version: '3.5'
+
+networks:
+  tairai:
+    driver: overlay
+    external: true
 
 services:
-
   ### APP (PHP-FPM + CADDY) ##############################################
   app:
     container_name: ${COMPOSE_PROJECT_NAME}_app_local
     build:
       args:
-        - PHP_VERSION=7.4
+        - PHP_VERSION=${PHP_VERSION}
         - PHP_FPM_INSTALL_XDEBUG=${PHP_FPM_INSTALL_XDEBUG}
         - PHP_FPM_INSTALL_OPCACHE=${PHP_FPM_INSTALL_OPCACHE}
+        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
       context: .
       dockerfile: docker/app/Dockerfile_local
-    image: registry.gitlab.com/flagstudio/${COMPOSE_PROJECT_NAME}:latest # образ, который строим. НЕ ТОТ из которого строимся
+    image: registry.gitlab.com/flagstudio/${COMPOSE_PROJECT_NAME}:latest
     volumes:
-      - ./:/var/www:cached
+      - ./:/var/www
+    networks:
+      - ${COMPOSE_PROJECT_NAME}
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      #- traefik.http.routers.secure-${COMPOSE_PROJECT_NAME}-app-router.middlewares=admin-auth
+      #http
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}-app-service.loadbalancer.server.port=${APP_PORT}
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-app-router.rule=Host(`${APP_URI}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-app-router.entrypoints=http
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-app-router.service=${COMPOSE_PROJECT_NAME}-app-service
+      #      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-app-router.middlewares=https-redirect
+      #https
+  #      - traefik.http.services.secure-${COMPOSE_PROJECT_NAME}-app-service.loadbalancer.server.port=${APP_PORT}
+  #      - traefik.http.routers.secure-${COMPOSE_PROJECT_NAME}-app-router.rule=Host(`${APP_URI}`)
+  #      - traefik.http.routers.secure-${COMPOSE_PROJECT_NAME}-app-router.entrypoints=https
+  #      - traefik.http.routers.secure-${COMPOSE_PROJECT_NAME}-app-router.service=${COMPOSE_PROJECT_NAME}-app-service
+
+  #      - traefik.http.routers.secure-${COMPOSE_PROJECT_NAME}-app-router.tls=true
+  #      - traefik.http.routers.secure-${COMPOSE_PROJECT_NAME}-app-router.tls.certresolver=le
+
+  ### TRAEFIK (Edge Reverse Proxy) ##############################################
+  traefik:
+    image: traefik:v2.5.6
+    container_name: ${COMPOSE_PROJECT_NAME}_traefik
+    security_opt:
+      - no-new-privileges:true
     ports:
-      - "80:8080"
-      - "127.0.0.1:3000:3000"
-    expose:
-      - "9000"
+      - ${TRAEFIK_WEB_PORT}:80
+      - ${TRAEFIK_SECURE_WEB_PORT}:443
+      - ${TRAEFIK_PORT}:8080
+    command:
+      - --log.level=DEBUG
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:${TRAEFIK_WEB_PORT}
+      - --entrypoints.https.address=:${TRAEFIK_SECURE_WEB_PORT}
+      - --entrypoints.dashboard.address=:${TRAEFIK_PORT}
 
-  ### SSL proxy (Caddy Server) #########################################
-#  ssl:
-#    image: registry.gitlab.com/flagstudio/laraflag:ssl-base
-#    ports:
-#      - "443:443"
-#      - "80:80"
-#    volumes:
-#      - ./docker/ssl/Caddyfile_SSL:/etc/Caddyfile
+      - --certificatesresolvers.le.acme.httpchallenge=true
+      - --certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.le.acme.email=info@${APP_URI}
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=http
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/traefik/letsencrypt:/letsencrypt
+    networks:
+      - ${COMPOSE_PROJECT_NAME}
+    labels:
+      # Enable Traefik for this service, to make it available in the public network
+      - traefik.enable=true
+      # Use the traefik-public network (declared below)
+      - traefik.docker.network=${COMPOSE_PROJECT_NAME}
 
+      # https-redirect middleware to redirect HTTP to HTTPS
+      # It can be re-used by other stacks in other Docker Compose files
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+
+      # traefik-http set up only to use the middleware to redirect to https
+      # Uses the environment variable TRAEFIK_DOMAIN
+      - traefik.http.routers.traefik-public-http.rule=Host(`${TRAEFIK_URI}`)
+      - traefik.http.routers.traefik-public-http.entrypoints=http
+      #      - traefik.http.routers.traefik-public-http.middlewares=https-redirect
+      # traefik-https the actual router using HTTPS
+      # Uses the environment variable TRAEFIK_DOMAIN
+      #      - traefik.http.routers.traefik-public-https.rule=Host(`${TRAEFIK_URI}`)
+      #      - traefik.http.routers.traefik-public-https.entrypoints=https
+      #      - traefik.http.routers.traefik-public-https.tls=true
+      # Use the special Traefik service api@internal with the web UI/Dashboard
+      #      - traefik.http.routers.traefik-public-https.service=api@internal
+      # Use the "le" (Let's Encrypt) resolver created below
+      #      - traefik.http.routers.traefik-public-https.tls.certresolver=le
+      # Define the port inside of the Docker service to use
+      - traefik.http.services.traefik-public.loadbalancer.server.port=${TRAEFIK_PORT}
+    restart: unless-stopped
 
   ### PostgreSQL ###########################################
   postgres:
@@ -41,5 +110,9 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - ${DATA_PATH_HOST}/postgres:/var/lib/postgresql/data:delegated
+    expose:
+      - ${DB_PORT}
     ports:
-      - "127.0.0.1:5432:5432"
+      - ${DB_PORT}:5432
+    networks:
+      - ${COMPOSE_PROJECT_NAME}
