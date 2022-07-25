@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 
-use App\Containers\GiveMeMyMoney\Mails\ElectronicCertificateMail;
+use App\Events\CreatedNewRentRequestEvent;
 use App\Http\Requests\StoreRequest;
 use App\Jobs\ProcessingCreatedRentRequestJob;
 use App\Mail\NotifyModeratorAboutNewRentRequestMail;
@@ -63,7 +63,7 @@ class RentRequestController extends Controller
                 throw new \Exception();
             }
 
-            CreatedNewRentRequetEvent::dispatch('request created');
+            CreatedNewRentRequestEvent::dispatch('request created');
 
             ProcessingCreatedRentRequestJob::dispatch();
 
