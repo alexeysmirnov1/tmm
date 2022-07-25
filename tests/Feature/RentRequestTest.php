@@ -2,8 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Containers\Visit\Jobs\BackgroundProcessingCreatedServiceJob;
+use App\Events\CreatedNewRentRequestEvent;
+use App\Jobs\ProcessingCreatedRentRequestJob;
+use App\Mail\NotifyModeratorAboutNewRentRequestMail;
 use App\Models\User;
+use App\Services\OneSClient;
 use Database\Seeders\RequestSeeder;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Bus;
@@ -13,7 +16,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Mockery\MockInterface;
 use Tests\TestCase;
+use TiMacDonald\Log\LogFake;
 
 class RentRequestTest extends TestCase
 {
@@ -29,6 +34,11 @@ class RentRequestTest extends TestCase
             ]);
 
         $this->seed(RequestSeeder::class);
+
+        Http::fake();
+        Event::fake();
+        Bus::fake();
+        Mail::fake();
     }
 
     public function testGuestNotSeeRequestList()
@@ -81,6 +91,14 @@ class RentRequestTest extends TestCase
      */
     public function testClientSentRentRequestValidation(array $request, int $status)
     {
+        $this->mock(OneSClient::class, function (MockInterface $mock) {
+            $mock->shouldReceive('sendNewRequest')
+                ->andReturn([
+                    'Error' => 0,
+                    'ErrorMessage' => '',
+                ]);
+        });
+
         $this->assertGuest();
 
         $this->postJson(route('rent.requests.store'), $request)
@@ -89,11 +107,7 @@ class RentRequestTest extends TestCase
 
     public function testClientSentRentRequest()
     {
-        Http::fake();
-        Event::fake();
-        Bus::fake();
-        Mail::fake();
-        $this->mockOnes();
+        $this->mockOnesSuccess();
 
         $this->assertGuest();
 
@@ -118,24 +132,26 @@ class RentRequestTest extends TestCase
         $this->assertDatabaseHas('requests', $request);
 
         Http::assertSent(
-            fn (Request $request) =>
-                $request->url() === 'https://ones.project.ru/create/new/request'
-                && $request['Title'] === $request['title']
+            fn (Request $httpRequest) =>
+                $httpRequest->url() === 'https://ones.project.ru/create/new/request'
+                && $httpRequest['Title'] === $request['title']
         );
 
         Event::assertDispatched(
             CreatedNewRentRequestEvent::class,
             fn ($event) =>
-                $event->message === 'service created'
+                $event->message === 'request created'
         );
 
         Bus::assertDispatched(ProcessingCreatedRentRequestJob::class);
 
-        Mail::assertSent(NotiyModeratorAboutNewRentRequestMail::class);
+        Mail::assertSent(NotifyModeratorAboutNewRentRequestMail::class);
     }
 
     public function testFailedCreated()
     {
+        $this->mockOnesFailed();
+
         Log::swap(new LogFake);
 
         $request = [
@@ -144,7 +160,7 @@ class RentRequestTest extends TestCase
             'email' => 'real@mail.ru',
         ];
 
-        $this->postJson(route('api.example.create'), $request)
+        $this->postJson(route('rent.requests.store'), $request)
             ->assertStatus(500)
             ->withException(new \Exception());
 
@@ -156,7 +172,7 @@ class RentRequestTest extends TestCase
         );
     }
 
-    private function createRequestProvider()
+    private function createRequestProvider(): array
     {
         return [
             'success' => [
@@ -172,5 +188,29 @@ class RentRequestTest extends TestCase
                 422,
             ],
         ];
+    }
+
+    private function mockOnesSuccess(): void
+    {
+        $this->mock(OneSClient::class, function (MockInterface $mock) {
+            $mock->shouldReceive('sendNewRequest')
+                ->once()
+                ->andReturn([
+                    'Error' => 0,
+                    'ErrorMessage' => '',
+                ]);
+        });
+    }
+
+    private function mockOnesFailed(): void
+    {
+        $this->mock(OneSClient::class, function (MockInterface $mock) {
+            $mock->shouldReceive('sendNewRequest')
+                ->once()
+                ->andReturn([
+                    'Error' => 1,
+                    'ErrorMessage' => 'Error',
+                ]);
+        });
     }
 }
