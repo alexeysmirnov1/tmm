@@ -20,6 +20,9 @@ class AuthFlagServiceProvider extends ServiceProvider
             return new AuthFlagFacade;
         });
 
+        $this->loadRoutesFrom(__DIR__.'/routes/api.php');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+
         $this->publishes([
             __DIR__ . '/config/auth-flag.php' => config_path('auth-flag.php'),
         ], 'AuthFlagConfig');
@@ -30,5 +33,9 @@ class AuthFlagServiceProvider extends ServiceProvider
         ], 'AuthFlagAssets');
 
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'AuthFlag');
+
+        $this->publishes([
+            __DIR__.'/resources/views' => resource_path('views/vendor/AuthFlag'),
+        ], 'AuthFlagView');
     }
 }

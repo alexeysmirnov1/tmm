@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b7680fa66e6c439e3089202473ebf7f7",
+    "content-hash": "89e6b95ac575b8f5129009dd36db00cd",
     "packages": [
         {
             "name": "64robots/nova-fields",
@@ -2229,6 +2229,42 @@
                 }
             ],
             "time": "2022-01-07T12:00:00+00:00"
+        },
+        {
+            "name": "flagstudio/auth-flag",
+            "version": "dev-youtube",
+            "dist": {
+                "type": "path",
+                "url": "./packages/AuthFlag",
+                "reference": "a36b2fa8b1df3b12198a6734b7f723fe7839fa10"
+            },
+            "require": {
+                "illuminate/support": "^8.83",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Flagstudio\\AuthFlag\\AuthFlagServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Flagstudio\\AuthFlag\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Auth",
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "flagstudio/nova-actions-left",
@@ -17432,7 +17468,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "drandin/declension-nouns": 20
+        "drandin/declension-nouns": 20,
+        "flagstudio/auth-flag": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

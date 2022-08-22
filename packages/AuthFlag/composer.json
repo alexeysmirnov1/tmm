@@ -3,6 +3,11 @@
     "description": "Auth",
     "license": "MIT",
     "extra": {
+        "laravel": {
+            "providers": [
+                "Flagstudio\\AuthFlag\\AuthFlagServiceProvider"
+            ]
+        }
     },
     "require": {
         "php": "^8.0",
