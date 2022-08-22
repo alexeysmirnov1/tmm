@@ -15,7 +15,11 @@ use App\Http\Controllers\RentRequestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-//Auth::routes();
+//Auth::flagRoutes();
+
+Route::get('home', function () {
+    return 'home page';
+})->name('home');
 
 Route::middleware('auth')
     ->group(function () {

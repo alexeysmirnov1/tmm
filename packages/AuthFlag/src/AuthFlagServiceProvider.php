@@ -3,7 +3,9 @@
 namespace Flagstudio\AuthFlag;
 
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Ui\AuthRouteMethods;
 
 class AuthFlagServiceProvider extends ServiceProvider
 {
