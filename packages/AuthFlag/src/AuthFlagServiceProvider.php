@@ -14,6 +14,9 @@ class AuthFlagServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__ . '/config/auth-flag.php', 'auth-flag'
         );
+
+        Route::middleware('web')
+            ->group(__DIR__.'/routes/web.php');
     }
 
     public function boot(): void
@@ -22,8 +25,11 @@ class AuthFlagServiceProvider extends ServiceProvider
             return new AuthFlagFacade;
         });
 
-        $this->loadRoutesFrom(__DIR__.'/routes/api.php');
-        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+//        $this->loadRoutesFrom(__DIR__.'/routes/api.php');
+//        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+
+//        Route::middleware('web')
+//            ->group(__DIR__.'/routes/web.php');
 
         $this->publishes([
             __DIR__ . '/config/auth-flag.php' => config_path('auth-flag.php'),

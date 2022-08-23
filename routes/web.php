@@ -12,11 +12,11 @@
 */
 
 use App\Http\Controllers\RentRequestController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/home', function () {
-    dd(Auth::user());
-    return 'home page for ' . Auth::user();
+    return 'home page for ' . Auth::user()->name ?? 'NOT FOUND';
 })
     ->name('home')
     ->middleware('auth');

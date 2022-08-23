@@ -18,10 +18,13 @@ class LoginController extends BaseController
         if (Auth::attempt([
             'email' => $request->email,
             'password' => $request->password,
-        ], true)) {
-            return redirect()->route('home');
+        ])) {
+            session()->regenerate();
+            return redirect()->intended('home');
         }
 
-        abort(401);
+        return back()->withErrors([
+            'error' => 'Error.',
+        ]);
     }
 }
