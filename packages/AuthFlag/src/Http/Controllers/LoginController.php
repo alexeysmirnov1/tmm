@@ -8,20 +8,20 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends BaseController
 {
-    public function index()
+    public function page()
     {
         return view('vendor.AuthFlag.auth-flag.login');
     }
 
-    public function store(LoginClientRequest $request)
+    public function login(LoginClientRequest $request)
     {
-        Auth::attempt([
-            'email' => $request->login,
+        if (Auth::attempt([
+            'email' => $request->email,
             'password' => $request->password,
-        ]);
+        ], true)) {
+            return redirect()->route('home');
+        }
 
-        dd(Auth::user());
-
-        return redirect()->route(route('home'));
+        abort(401);
     }
 }
