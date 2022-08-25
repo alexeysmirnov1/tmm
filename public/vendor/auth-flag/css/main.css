@@ -1,0 +1,51 @@
+@font-face {
+  font-weight: 300;
+  font-style: normal;
+  font-family: "Open Sans";
+  src: url(/fonts/OpenSans-Light.woff2?d7d0fea78e03fc2af0497346ca96971e) format("woff2"), url(/fonts/OpenSans-Light.woff?36b9f49ff2edc947830b10211952c6bc) format("woff");
+  font-display: swap;
+}
+
+body {
+  background: #ebebeb;
+  color: #31363b;
+  height: 100%;
+  font-family: "Open Sans", Arial, sans-serif;
+}
+
+.wrapper {
+  display: grid;
+  height: 100%;
+}
+
+.login-page {
+  display: grid;
+  background: #fafafa;
+  align-self: center;
+  justify-self: center;
+  width: 400px;
+  border: solid 1px #bdbebe;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.login-page > img, h1, form {
+  display: grid;
+  justify-self: center;
+}
+
+form {
+  width: 100%;
+}
+
+input, button {
+  background: inherit;
+  border: solid 1px #bdbebe;
+  border-radius: 5px;
+  padding: 7px 12px;
+}
+
+button:hover {
+  background: #00ab76;
+  cursor: pointer;
+}

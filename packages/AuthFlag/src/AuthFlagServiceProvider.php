@@ -3,7 +3,6 @@
 namespace Flagstudio\AuthFlag;
 
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AuthFlagServiceProvider extends ServiceProvider
@@ -19,9 +18,9 @@ class AuthFlagServiceProvider extends ServiceProvider
     {
 //        Route::mixin(new AuthFlag);
 
-        App::bind('auth.flag', function() {
-            return new AuthFlagFacade;
-        });
+//        App::bind('auth.flag', function() {
+//            return new AuthFlagFacade;
+//        });
 
         $this->loadRoutesFrom(__DIR__.'/routes/api.php');
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
