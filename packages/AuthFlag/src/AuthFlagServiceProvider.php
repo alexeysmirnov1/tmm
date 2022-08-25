@@ -5,7 +5,6 @@ namespace Flagstudio\AuthFlag;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Ui\AuthRouteMethods;
 
 class AuthFlagServiceProvider extends ServiceProvider
 {
@@ -14,19 +13,18 @@ class AuthFlagServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__ . '/config/auth-flag.php', 'auth-flag'
         );
-
-        Route::middleware('web')
-            ->group(__DIR__.'/routes/web.php');
     }
 
     public function boot(): void
     {
+//        Route::mixin(new AuthFlag);
+
         App::bind('auth.flag', function() {
             return new AuthFlagFacade;
         });
 
-//        $this->loadRoutesFrom(__DIR__.'/routes/api.php');
-//        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/routes/api.php');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
 
 //        Route::middleware('web')
 //            ->group(__DIR__.'/routes/web.php');

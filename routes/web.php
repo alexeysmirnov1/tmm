@@ -15,6 +15,8 @@ use App\Http\Controllers\RentRequestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+//Route::authFlag();
+
 Route::get('/home', function () {
     return 'home page for ' . Auth::user()->name ?? 'NOT FOUND';
 })
